@@ -35,13 +35,35 @@ public class Freelancer {
     public int getCompletedProjects() { return completedProjects; }
 
     // Setters
-    public void setName(String name) { this.name = name; }
-    public void setEmail(String email) { this.email = email; }
-    public void setHourlyRate(double hourlyRate) {
-        if (hourlyRate > 0) this.hourlyRate = hourlyRate;
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        this.name = name;
     }
+
+    public void setEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+        if (!email.contains("@")) {
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
+        this.email = email;
+    }
+
+    public void setHourlyRate(double hourlyRate) {
+        if (hourlyRate <= 0) {
+            throw new IllegalArgumentException("Hourly rate must be positive, got: " + hourlyRate);
+        }
+        this.hourlyRate = hourlyRate;
+    }
+
     public void setRating(double rating) {
-        if (rating >= 0 && rating <= 5) this.rating = rating;
+        if (rating < 0 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 0 and 5, got: " + rating);
+        }
+        this.rating = rating;
     }
 
     // Methods
