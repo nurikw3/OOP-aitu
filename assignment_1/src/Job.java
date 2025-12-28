@@ -1,5 +1,3 @@
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Job {
@@ -23,22 +21,54 @@ public class Job {
     }
 
     // Getters
-    public int getJobId() { return jobId; }
-    public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public double getBudget() { return budget; }
-    public String getDuration() { return duration; }
-    public List<String> getRequiredSkills() { return requiredSkills; }
-    public String getStatus() { return status; }
+    public int getJobId() {
+        return jobId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getBudget() {
+        return budget;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public List<String> getRequiredSkills() {
+        return requiredSkills;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 
     // Setters
-    public void setTitle(String title) { this.title = title; }
-    public void setDescription(String description) { this.description = description; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setBudget(double budget) {
         if (budget > 0) this.budget = budget;
     }
-    public void setDuration(String duration) { this.duration = duration; }
-    public void setStatus(String status) { this.status = status; }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     // Methods
     public void displayJob() {
@@ -65,8 +95,9 @@ public class Job {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Job job = (Job) obj;
-        return jobId == job.jobId;
+        else if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+        return false;
     }
 }
