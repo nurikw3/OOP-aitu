@@ -105,17 +105,16 @@ public class JobPortal {
     //sort
     public void sortByJobsBudget(boolean reverse) {
         for (int i = 0; i < jobs.size(); i++) {
-            for (int j = 0; j < jobs.size() - i - 1; j++) {
-                if (jobs.get(j).getBudget() > jobs.get(j + 1).getBudget() && !reverse) {
+            for (int j = 0; j < jobs.size() - i -1; j++) {
+                if (jobs.get(j).getBudget() < jobs.get(j+1).getBudget() && !reverse) {
                     Job temp = jobs.get(j);
-                    jobs.set(j, jobs.get(j + 1));
-                    jobs.set(j + 1, temp);
+                    jobs.set(j, jobs.get(j+1));
+                    jobs.set(j+1, temp);
                 }
-
-                if (jobs.get(j).getBudget() < jobs.get(j + 1).getBudget() && reverse) {
+                if (jobs.get(j).getBudget() > jobs.get(j+1).getBudget() && reverse) {
                     Job temp = jobs.get(j);
-                    jobs.set(j, jobs.get(j + 1));
-                    jobs.set(j + 1, temp);
+                    jobs.set(j, jobs.get(j+1));
+                    jobs.set(j+1, temp);
                 }
             }
         }
