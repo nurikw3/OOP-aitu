@@ -1,6 +1,5 @@
 package src;
 
-import java.sql.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,173 +25,176 @@ public class Main {
                 break;
             }
 
-            System.out.println("What? 1-Job, 2-Freelancer, 3-Client");
+            System.out.println("Select type: 1-Job, 2-Freelancer, 3-Client");
             System.out.print("Type: ");
             int type = sc.nextInt();
             sc.nextLine();
 
-            try {
-                if (choice == 1) { // SHOW ALL
-                    if (type == 1) {
-                        List<Job> jobs = DBHelper.getAllJobs();
-                        for (Job j : jobs) {
-                            System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget());
-                        }
-                    } else if (type == 2) {
-                        List<Freelancer> frs = DBHelper.getAllFreelancers();
-                        for (Freelancer f : frs) {
-                            System.out.println(f.getId() + " | " + f.getName() + " | " + f.getEmail());
-                        }
-                    } else if (type == 3) {
-                        List<Client> cls = DBHelper.getAllClients();
-                        for (Client c : cls) {
-                            System.out.println(c.getId() + " | " + c.getName() + " | " + c.getCompany());
-                        }
+            if (choice == 1) { // SHOW ALL
+                if (type == 1) {
+                    List<Job> jobs = DBHelper.getAllJobs();
+                    for (Job j : jobs) {
+                        System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget());
+                    }
+                } else if (type == 2) {
+                    List<Freelancer> frs = DBHelper.getAllFreelancers();
+                    for (Freelancer f : frs) {
+                        System.out.println(f.getId() + " | " + f.getName() + " | " + f.getEmail());
+                    }
+                } else if (type == 3) {
+                    List<Client> cls = DBHelper.getAllClients();
+                    for (Client c : cls) {
+                        System.out.println(c.getId() + " | " + c.getName() + " | " + c.getCompany());
                     }
                 }
+            }
 
-                else if (choice == 2) { // FIND BY ID
-                    System.out.print("ID: ");
-                    int id = sc.nextInt();
+            else if (choice == 2) { // FIND BY ID
+                System.out.print("ID: ");
+                int id = sc.nextInt();
+                sc.nextLine();
+
+                if (type == 1) {
+                    Job j = DBHelper.getJobById(id);
+                    if (j != null) {
+                        System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget() + " | " + j.getDuration());
+                    } else {
+                        System.out.println("Not found!");
+                    }
+                } else if (type == 2) {
+                    Freelancer f = DBHelper.getFreelancerById(id);
+                    if (f != null) {
+                        System.out.println(f.getId() + " | " + f.getName() + " | " + f.getEmail() + " | $" + f.getHourlyRate());
+                    } else {
+                        System.out.println("Not found!");
+                    }
+                } else if (type == 3) {
+                    Client c = DBHelper.getClientById(id);
+                    if (c != null) {
+                        System.out.println(c.getId() + " | " + c.getName() + " | " + c.getEmail() + " | " + c.getCompany());
+                    } else {
+                        System.out.println("Not found!");
+                    }
+                }
+            }
+
+            else if (choice == 3) { // ADD
+                System.out.print("ID: ");
+                int id = sc.nextInt();
+                sc.nextLine();
+
+                boolean success = false;
+
+                if (type == 1) {
+                    System.out.print("Title: ");
+                    String title = sc.nextLine();
+                    System.out.print("Budget: ");
+                    double budget = sc.nextDouble();
+                    sc.nextLine();
+                    System.out.print("Duration: ");
+                    String duration = sc.nextLine();
+
+                    Job j = new Job(id, title, budget, duration, null);
+                    success = DBHelper.saveJob(j);
+
+                } else if (type == 2) {
+                    System.out.print("Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Email: ");
+                    String email = sc.nextLine();
+                    System.out.print("Rate: ");
+                    double rate = sc.nextDouble();
+                    System.out.print("Rating: ");
+                    double rating = sc.nextDouble();
                     sc.nextLine();
 
-                    if (type == 1) {
-                        Job j = DBHelper.getJobById(id);
-                        if (j != null) {
-                            System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget() + " | " + j.getDuration());
-                        } else {
-                            System.out.println("Not found!");
-                        }
-                    } else if (type == 2) {
-                        Freelancer f = DBHelper.getFreelancerById(id);
-                        if (f != null) {
-                            System.out.println(f.getId() + " | " + f.getName() + " | " + f.getEmail() + " | $" + f.getHourlyRate());
-                        } else {
-                            System.out.println("Not found!");
-                        }
-                    } else if (type == 3) {
-                        Client c = DBHelper.getClientById(id);
-                        if (c != null) {
-                            System.out.println(c.getId() + " | " + c.getName() + " | " + c.getEmail() + " | " + c.getCompany());
-                        } else {
-                            System.out.println("Not found!");
-                        }
-                    }
+                    Freelancer f = new Freelancer(id, name, email, null, rate);
+                    f.setRating(rating);
+                    success = DBHelper.saveFreelancer(f);
+
+                } else if (type == 3) {
+                    System.out.print("Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Email: ");
+                    String email = sc.nextLine();
+                    System.out.print("Company: ");
+                    String company = sc.nextLine();
+
+                    Client c = new Client(id, name, email, company);
+                    success = DBHelper.saveClient(c);
                 }
 
-                else if (choice == 3) { // ADD
-                    System.out.print("ID: ");
-                    int id = sc.nextInt();
+                System.out.println(success ? "Added!" : "Failed to add!");
+            }
+
+            else if (choice == 4) { // UPDATE
+                System.out.print("ID: ");
+                int id = sc.nextInt();
+                sc.nextLine();
+
+                boolean success = false;
+
+                if (type == 1) {
+                    System.out.print("Title: ");
+                    String title = sc.nextLine();
+                    System.out.print("Budget: ");
+                    double budget = sc.nextDouble();
+                    sc.nextLine();
+                    System.out.print("Duration: ");
+                    String duration = sc.nextLine();
+
+                    Job j = new Job(id, title, budget, duration, null);
+                    success = DBHelper.updateJob(j);
+
+                } else if (type == 2) {
+                    System.out.print("Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Email: ");
+                    String email = sc.nextLine();
+                    System.out.print("Rate: ");
+                    double rate = sc.nextDouble();
+                    System.out.print("Rating: ");
+                    double rating = sc.nextDouble();
                     sc.nextLine();
 
-                    if (type == 1) {
-                        System.out.print("Title: ");
-                        String title = sc.nextLine();
-                        System.out.print("Budget: ");
-                        double budget = sc.nextDouble();
-                        sc.nextLine();
-                        System.out.print("Duration: ");
-                        String duration = sc.nextLine();
+                    Freelancer f = new Freelancer(id, name, email, null, rate);
+                    f.setRating(rating);
+                    success = DBHelper.updateFreelancer(f);
 
-                        Job j = new Job(id, title, budget, duration, null);
-                        DBHelper.saveJob(j);
-                        System.out.println("Added!");
-                    } else if (type == 2) {
-                        System.out.print("Name: ");
-                        String name = sc.nextLine();
-                        System.out.print("Email: ");
-                        String email = sc.nextLine();
-                        System.out.print("Rate: ");
-                        double rate = sc.nextDouble();
-                        System.out.print("Rating: ");
-                        double rating = sc.nextDouble();
-                        sc.nextLine();
+                } else if (type == 3) {
+                    System.out.print("Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Email: ");
+                    String email = sc.nextLine();
+                    System.out.print("Company: ");
+                    String company = sc.nextLine();
 
-                        Freelancer f = new Freelancer(id, name, email, null, rate);
-                        f.setRating(rating);
-                        DBHelper.saveFreelancer(f);
-                        System.out.println("Added!");
-                    } else if (type == 3) {
-                        System.out.print("Name: ");
-                        String name = sc.nextLine();
-                        System.out.print("Email: ");
-                        String email = sc.nextLine();
-                        System.out.print("Company: ");
-                        String company = sc.nextLine();
-
-                        Client c = new Client(id, name, email, company);
-                        DBHelper.saveClient(c);
-                        System.out.println("Added!");
-                    }
+                    Client c = new Client(id, name, email, company);
+                    success = DBHelper.updateClient(c);
                 }
 
-                else if (choice == 4) { // UPDATE
-                    System.out.print("ID: ");
-                    int id = sc.nextInt();
-                    sc.nextLine();
+                System.out.println(success ? "Updated!" : "Failed to update!");
+            }
 
-                    if (type == 1) {
-                        System.out.print("Title: ");
-                        String title = sc.nextLine();
-                        System.out.print("Budget: ");
-                        double budget = sc.nextDouble();
-                        sc.nextLine();
-                        System.out.print("Duration: ");
-                        String duration = sc.nextLine();
+            else if (choice == 5) { // DELETE
+                System.out.print("ID: ");
+                int id = sc.nextInt();
+                sc.nextLine();
 
-                        Job j = new Job(id, title, budget, duration, null);
-                        DBHelper.updateJob(j);
-                        System.out.println("Updated!");
-                    } else if (type == 2) {
-                        System.out.print("Name: ");
-                        String name = sc.nextLine();
-                        System.out.print("Email: ");
-                        String email = sc.nextLine();
-                        System.out.print("Rate: ");
-                        double rate = sc.nextDouble();
-                        System.out.print("Rating: ");
-                        double rating = sc.nextDouble();
-                        sc.nextLine();
+                boolean success = false;
 
-                        Freelancer f = new Freelancer(id, name, email, null, rate);
-                        f.setRating(rating);
-                        DBHelper.updateFreelancer(f);
-                        System.out.println("Updated!");
-                    } else if (type == 3) {
-                        System.out.print("Name: ");
-                        String name = sc.nextLine();
-                        System.out.print("Email: ");
-                        String email = sc.nextLine();
-                        System.out.print("Company: ");
-                        String company = sc.nextLine();
-
-                        Client c = new Client(id, name, email, company);
-                        DBHelper.updateClient(c);
-                        System.out.println("Updated!");
-                    }
+                if (type == 1) {
+                    success = DBHelper.deleteJob(id);
+                } else if (type == 2) {
+                    success = DBHelper.deleteFreelancer(id);
+                } else if (type == 3) {
+                    success = DBHelper.deleteClient(id);
                 }
 
-                else if (choice == 5) { // DELETE
-                    System.out.print("ID: ");
-                    int id = sc.nextInt();
-                    sc.nextLine();
-
-                    if (type == 1) {
-                        DBHelper.deleteJob(id);
-                        System.out.println("Deleted!");
-                    } else if (type == 2) {
-                        DBHelper.deleteFreelancer(id);
-                        System.out.println("Deleted!");
-                    } else if (type == 3) {
-                        DBHelper.deleteClient(id);
-                        System.out.println("Deleted!");
-                    }
-                }
-
-            } catch (SQLException e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println(success ? "Deleted!" : "Failed to delete!");
             }
         }
+
         sc.close();
     }
 }
