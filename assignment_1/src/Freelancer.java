@@ -68,7 +68,7 @@ public class Freelancer {
 
     // Methods
     public void displayFreelancer() {
-        System.out.println("\n--- Freelancer Profile ---");
+        System.out.println("\n--- com.Freelancer Profile ---");
         System.out.println("ID: " + freelancerId);
         System.out.println("Name: " + name);
         System.out.println("Email: " + email);
@@ -95,7 +95,7 @@ public class Freelancer {
 
     @Override
     public String toString() {
-        return "Freelancer(ID: " + freelancerId + ", Name: " + name + ", Rate: $" + hourlyRate + "/hr)";
+        return "com.Freelancer(ID: " + freelancerId + ", Name: " + name + ", Rate: $" + hourlyRate + "/hr)";
     }
 
     @Override

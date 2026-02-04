@@ -1,4 +1,4 @@
-package src;
+package com;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +20,19 @@ public class JobPortal {
 
     public void addJob(Job job) {
         jobs.add(job);
-        System.out.println("Job added " + job.getTitle());
+        System.out.println("com.Job added " + job.getTitle());
     }
 
 
     public void addFreelancer(Freelancer freelancer) {
         freelancers.add(freelancer);
-        System.out.println("Freelancer added " + freelancer.getName());
+        System.out.println("com.Freelancer added " + freelancer.getName());
     }
 
 
     public void addClient(Client client) {
         clients.add(client);
-        System.out.println("Freelancer added " + client.getName());
+        System.out.println("com.Freelancer added " + client.getName());
     }
 
 

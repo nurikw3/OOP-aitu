@@ -72,7 +72,7 @@ public class Job {
 
     // Methods
     public void displayJob() {
-        System.out.println("\n--- Job Details ---");
+        System.out.println("\n--- com.Job Details ---");
         System.out.println("ID: " + jobId);
         System.out.println("Title: " + title);
         System.out.println("Description: " + description);
@@ -84,12 +84,12 @@ public class Job {
 
     public void closeJob() {
         this.status = "Closed";
-        System.out.println("Job '" + title + "' has been closed.");
+        System.out.println("com.Job '" + title + "' has been closed.");
     }
 
     @Override
     public String toString() {
-        return "Job(ID: " + jobId + ", Title: " + title + ", Budget: $" + budget + ")";
+        return "com.Job(ID: " + jobId + ", Title: " + title + ", Budget: $" + budget + ")";
     }
 
     @Override

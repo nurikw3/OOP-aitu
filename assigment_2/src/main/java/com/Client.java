@@ -1,4 +1,4 @@
-package src;
+package com;
 
 public class Client extends User{
     private final String company;
@@ -23,7 +23,7 @@ public class Client extends User{
 
     @Override
     public void displayInfo() {
-        System.out.println("\n=== Client Info ===");
+        System.out.println("\n=== com.Client Info ===");
         System.out.println(super.toString());
         System.out.println("Company: " + company);
         System.out.println("Posted Jobs: " + postedJobs);
@@ -32,7 +32,7 @@ public class Client extends User{
 
     @Override
     public String toString() {
-        return "Client{" + super.toString() + ", Company: " + company + "}";
+        return "com.Client{" + super.toString() + ", Company: " + company + "}";
     }
 
 

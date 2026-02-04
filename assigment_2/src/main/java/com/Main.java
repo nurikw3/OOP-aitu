@@ -1,7 +1,8 @@
-package src;
+package com;
 
 import java.util.List;
 import java.util.Scanner;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -25,7 +26,7 @@ public class Main {
                 break;
             }
 
-            System.out.println("Select type: 1-Job, 2-Freelancer, 3-Client");
+            System.out.println("Select type: 1-com.Job, 2-com.Freelancer, 3-com.Client");
             System.out.print("Type: ");
             int type = sc.nextInt();
             sc.nextLine();
@@ -34,7 +35,7 @@ public class Main {
                 if (type == 1) {
                     List<Job> jobs = DBHelper.getAllJobs();
                     for (Job j : jobs) {
-                        System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget());
+                        System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget() + " | " + j.getSity());
                     }
                 } else if (type == 2) {
                     List<Freelancer> frs = DBHelper.getAllFreelancers();
@@ -57,7 +58,7 @@ public class Main {
                 if (type == 1) {
                     Job j = DBHelper.getJobById(id);
                     if (j != null) {
-                        System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget() + " | " + j.getDuration());
+                        System.out.println(j.getJobId() + " | " + j.getTitle() + " | $" + j.getBudget() + " | " + j.getDuration() + " | " + j.getSity());
                     } else {
                         System.out.println("Not found!");
                     }
@@ -93,8 +94,10 @@ public class Main {
                     sc.nextLine();
                     System.out.print("Duration: ");
                     String duration = sc.nextLine();
+                    System.out.println("City: ");
+                    String city = sc.nextLine();
 
-                    Job j = new Job(id, title, budget, duration, null);
+                    Job j = new Job(id, title, budget, duration, city,null);
                     success = DBHelper.saveJob(j);
 
                 } else if (type == 2) {
@@ -142,8 +145,10 @@ public class Main {
                     sc.nextLine();
                     System.out.print("Duration: ");
                     String duration = sc.nextLine();
+                    System.out.println("City: ");
+                    String city = sc.nextLine();
 
-                    Job j = new Job(id, title, budget, duration, null);
+                    Job j = new Job(id, title, budget, duration, city,null);
                     success = DBHelper.updateJob(j);
 
                 } else if (type == 2) {

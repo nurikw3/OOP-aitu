@@ -1,4 +1,4 @@
-package src;
+package com;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +47,7 @@ public class Freelancer extends User{
 
     @Override
     public void displayInfo() {
-        System.out.println("\n=== Freelancer Info ===");
+        System.out.println("\n=== com.Freelancer Info ===");
         System.out.println(super.toString());
         System.out.println("Skills: " + skills);
         System.out.println("Hourly Rate: $" + hourlyRate);
@@ -57,7 +57,7 @@ public class Freelancer extends User{
 
     @Override
     public String toString() {
-        return "Freelancer{" + super.toString() + ", Rate: $" + hourlyRate + ", Rating: " + getInfoRating() + "}";
+        return "com.Freelancer{" + super.toString() + ", Rate: $" + hourlyRate + ", Rating: " + getInfoRating() + "}";
     }
 
     @Override

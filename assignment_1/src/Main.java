@@ -4,10 +4,10 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("========== FREELANCE JOB PORTAL SYSTEM ==========\n");
 
-        // Create JobPortal instance
+        // Create com.JobPortal instance
         JobPortal portal = new JobPortal("FreelanceHub");
 
-        // Create Job instances
+        // Create com.Job instances
         Job job1 = new Job(
                 101,
                 "Web Developer Needed",
@@ -35,7 +35,7 @@ public class Main {
                 Arrays.asList("Photoshop", "Illustrator", "Graphic Design")
         );
 
-        // Create Freelancer instances
+        // Create com.Freelancer instances
         Freelancer freelancer1 = new Freelancer(
                 201,
                 "Sheldon LiKuper",
@@ -89,7 +89,7 @@ public class Main {
         portal.matchFreelancerToJob(freelancer3, job3);
         portal.matchFreelancerToJob(freelancer1, job2); // Mismatch example
 
-        // Test methods
+        // com.Test methods
         System.out.println("\n--- Testing Methods ---");
         freelancer1.addSkill("TypeScript");
         freelancer1.completeProject();
@@ -102,7 +102,7 @@ public class Main {
         System.out.println("freelancer1 equals freelancer2? " + freelancer1.equals(freelancer2));
         System.out.println("freelancer1 equals freelancer1? " + freelancer1.equals(freelancer1));
 
-        // Test getters and setters
+        // com.Test getters and setters
         System.out.println("\n--- Testing Getters/Setters ---");
         System.out.println("Job1 budget before: $" + job1.getBudget());
         job1.setBudget(5500.0);

@@ -1,4 +1,4 @@
-package src;
+package com;
 
 abstract class User{
     private final int id;

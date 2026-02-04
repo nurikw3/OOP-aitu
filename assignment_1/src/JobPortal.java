@@ -28,12 +28,12 @@ class JobPortal {
     // Methods
     public void addJob(Job job) {
         jobs.add(job);
-        System.out.println("Job '" + job.getTitle() + "' added to portal.");
+        System.out.println("com.Job '" + job.getTitle() + "' added to portal.");
     }
 
     public void addFreelancer(Freelancer freelancer) {
         freelancers.add(freelancer);
-        System.out.println("Freelancer '" + freelancer.getName() + "' registered.");
+        System.out.println("com.Freelancer '" + freelancer.getName() + "' registered.");
     }
 
     public void displayAllJobs() {
@@ -78,6 +78,6 @@ class JobPortal {
 
     @Override
     public String toString() {
-        return "JobPortal(Name: " + portalName + ", Jobs: " + jobs.size() + ", Freelancers: " + freelancers.size() + ")";
+        return "com.JobPortal(Name: " + portalName + ", Jobs: " + jobs.size() + ", Freelancers: " + freelancers.size() + ")";
     }
 }

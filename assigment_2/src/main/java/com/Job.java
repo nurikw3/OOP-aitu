@@ -1,4 +1,4 @@
-package src;
+package com;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,25 @@ public class Job {
     private String status;
     private String title;
     private final String duration;
+    private String city;
     private final List<String> requiredSkills;
 
-    public Job(int jobId, String title, double budget, String duration, List<String> requiredSkills) {
+    public Job(int jobId, String title, double budget, String duration, String city, List<String> requiredSkills) {
         this.jobId = jobId;
         this.title = title;
         this.budget = budget;
         this.duration = duration;
-        this.requiredSkills = new ArrayList<>(requiredSkills);
+        this.city = city;
+
+        if (requiredSkills == null) {
+            this.requiredSkills = new ArrayList<>();
+        } else {
+            this.requiredSkills = new ArrayList<>(requiredSkills);
+        }
+
         this.status = "Open";
     }
+
 
     public int getJobId() { return jobId; }
     public String getTitle() { return title; }
@@ -27,6 +36,7 @@ public class Job {
     public String getDuration() { return duration; }
     public List<String> getRequiredSkills() { return requiredSkills; }
     public String getStatus() { return status; }
+    public String getSity() {return city;}
 
     public void setTitle(String title) { this.title = title; }
     public void setBudget(double budget) {
@@ -34,9 +44,10 @@ public class Job {
             this.budget = budget;
     }
     public void setStatus(String status) { this.status = status; }
+    public void setSity(String city) {this.city = city;}
 
     public void displayJob() {
-        System.out.println("\n=== Job Details ===");
+        System.out.println("\n=== com.Job Details ===");
         System.out.println("ID: " + jobId);
         System.out.println("Title: " + title);
         System.out.println("Budget: $" + budget);
@@ -47,7 +58,7 @@ public class Job {
 
     @Override
     public String toString() {
-        return "Job{ID: " + jobId + ", Title: " + title + ", Budget: $" + budget + ", Status: " + status + "}";
+        return "com.Job{ID: " + jobId + ", Title: " + title + ", Budget: $" + budget + ", Status: " + status + "}";
     }
 
     @Override

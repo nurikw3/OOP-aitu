@@ -1,4 +1,4 @@
-package src;
+package com;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,22 +18,21 @@ public class DBHelper {
 
     // ==================== JOBS CRUD ====================
 
-    public static boolean saveJob(Job job) {
-        String sql = "INSERT INTO jobs (id, title, budget, duration) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+    public static boolean saveJob(Job job)
+    {
+        String sql = "INSERT INTO jobs (id, title,budget,duration, city) VALUES (?,?,?,?, ?)";
+        try (Connection con = getConnection();
+            PreparedStatement ps = con.prepareStatement(sql))
+        {
             ps.setInt(1, job.getJobId());
             ps.setString(2, job.getTitle());
             ps.setDouble(3, job.getBudget());
             ps.setString(4, job.getDuration());
-
+            ps.setString(5, job.getSity());
             ps.executeUpdate();
             return true;
-
-        } catch (SQLException e) {
-            System.err.println("Error while saving Job");
+        } catch (SQLException e){
+            System.err.println("Error in saving..");
             e.printStackTrace();
             return false;
         }
@@ -41,59 +40,62 @@ public class DBHelper {
 
     public static List<Job> getAllJobs() {
         List<Job> jobs = new ArrayList<>();
-        String sql = "SELECT id, title, budget, duration FROM jobs";
-
-        try (Connection conn = getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
+        String sql = "SELECT id, title , budget , duration, city FROM jobs";
+        try (
+                Connection con = getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(sql)
+                )
+        {
             while (rs.next()) {
                 jobs.add(new Job(
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getDouble("budget"),
                         rs.getString("duration"),
+                        rs.getString("city"),
                         new ArrayList<>()
                 ));
             }
-
         } catch (SQLException e) {
-            System.err.println("Error while loading Jobs");
+            System.err.println("error");
             e.printStackTrace();
         }
-
         return jobs;
     }
 
     public static Job getJobById(int id) {
-        String sql = "SELECT id, title, budget, duration FROM jobs WHERE id = ?";
-
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        String sql = "SELECT id , title , budget, duration, city FROM jobs WHERE id = ?";
+        try(
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+                )
+        {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
+            if (rs.next())
+            {
                 return new Job(
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getDouble("budget"),
                         rs.getString("duration"),
+                        rs.getString("city"),
                         new ArrayList<>()
                 );
             }
 
-        } catch (SQLException e) {
-            System.err.println("Error while loading Job by id=" + id);
+        }
+        catch (SQLException e)
+        {
+            System.err.println("Error in get job id");
             e.printStackTrace();
         }
-
         return null;
     }
 
     public static boolean updateJob(Job job) {
-        String sql = "UPDATE jobs SET title = ?, budget = ?, duration = ? WHERE id = ?";
+        String sql = "UPDATE jobs SET title = ?, budget = ?, duration = ? , city = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -101,13 +103,13 @@ public class DBHelper {
             ps.setString(1, job.getTitle());
             ps.setDouble(2, job.getBudget());
             ps.setString(3, job.getDuration());
-            ps.setInt(4, job.getJobId());
-
+            ps.setString(4, job.getSity());
+            ps.setInt(5, job.getJobId());
             ps.executeUpdate();
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while updating Job id=" + job.getJobId());
+            System.err.println("Error while updating com.Job id=" + job.getJobId());
             e.printStackTrace();
             return false;
         }
@@ -117,14 +119,13 @@ public class DBHelper {
         String sql = "DELETE FROM jobs WHERE id = ?";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+             PreparedStatement ps = conn.prepareStatement(sql)
+        ){
             ps.setInt(1, id);
             ps.executeUpdate();
             return true;
-
         } catch (SQLException e) {
-            System.err.println("Error while deleting Job id=" + id);
+            System.err.println("Error while deleting com.Job id=" + id);
             e.printStackTrace();
             return false;
         }
@@ -148,7 +149,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while saving Freelancer");
+            System.err.println("Error while saving com.Freelancer");
             e.printStackTrace();
             return false;
         }
@@ -204,7 +205,7 @@ public class DBHelper {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error while loading Freelancer id=" + id);
+            System.err.println("Error while loading com.Freelancer id=" + id);
             e.printStackTrace();
         }
 
@@ -227,7 +228,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while updating Freelancer id=" + f.getId());
+            System.err.println("Error while updating com.Freelancer id=" + f.getId());
             e.printStackTrace();
             return false;
         }
@@ -244,7 +245,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while deleting Freelancer id=" + id);
+            System.err.println("Error while deleting com.Freelancer id=" + id);
             e.printStackTrace();
             return false;
         }
@@ -267,7 +268,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while saving Client");
+            System.err.println("Error while saving com.Client");
             e.printStackTrace();
             return false;
         }
@@ -317,7 +318,7 @@ public class DBHelper {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error while loading Client id=" + id);
+            System.err.println("Error while loading com.Client id=" + id);
             e.printStackTrace();
         }
 
@@ -339,7 +340,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while updating Client id=" + c.getId());
+            System.err.println("Error while updating com.Client id=" + c.getId());
             e.printStackTrace();
             return false;
         }
@@ -356,7 +357,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while deleting Client id=" + id);
+            System.err.println("Error while deleting com.Client id=" + id);
             e.printStackTrace();
             return false;
         }
