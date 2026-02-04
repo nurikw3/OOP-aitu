@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelance Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #666;
+        }
+        .tab.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            margin-bottom: -2px;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        .delete-btn {
+            background: #dc3545;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: inline-block;
+            width: 120px;
+        }
+        .form-group input {
+            width: calc(100% - 130px);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .cancel-btn {
+            background: #6c757d;
+        }
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Freelance Portal</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('jobs')">Jobs</button>
+            <button class="tab" onclick="showTab('freelancers')">Freelancers</button>
+            <button class="tab" onclick="showTab('clients')">Clients</button>
+        </div>
+
+        <!-- JOBS -->
+        <div id="jobs" class="section active">
+            <div class="controls">
+                <button onclick="loadJobs()">Refresh</button>
+                <button onclick="openAddJobModal()">Add Job</button>
+                <button onclick="loadJobs('budget', 'desc')" style="background: #6c757d;">Sort by Budget ↓</button>
+                <button onclick="loadJobs('budget', 'asc')" style="background: #6c757d;">Sort by Budget ↑</button>
+            </div>
+            <table id="jobsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Budget</th>
+                        <th>Duration</th>
+                        <th>City</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- FREELANCERS -->
+        <div id="freelancers" class="section">
+            <div class="controls">
+                <button onclick="loadFreelancers()">Refresh</button>
+                <button onclick="openAddFreelancerModal()">Add Freelancer</button>
+                <button onclick="loadFreelancers('rate')" style="background: #6c757d;">Sort by Rate</button>
+                <button onclick="loadFreelancers('rating')" style="background: #6c757d;">Sort by Rating</button>
+            </div>
+            <table id="freelancersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Skills</th>
+                        <th>Rate</th>
+                        <th>Rating</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- CLIENTS -->
+        <div id="clients" class="section">
+            <div class="controls">
+                <button onclick="loadClients()">Refresh</button>
+                <button onclick="openAddClientModal()">Add Client</button>
+            </div>
+            <table id="clientsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Company</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Job Modal -->
+    <div id="addJobModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Job</h2>
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" id="jobId">
+            </div>
+            <div class="form-group">
+                <label>Title:</label>
+                <input type="text" id="jobTitle">
+            </div>
+            <div class="form-group">
+                <label>Budget:</label>
+                <input type="number" id="jobBudget">
+            </div>
+            <div class="form-group">
+                <label>Duration:</label>
+                <input type="text" id="jobDuration">
+            </div>
+            <div class="form-group">
+                <label>City:</label>
+                <input type="text" id="jobCity">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('addJobModal')">Cancel</button>
+                <button onclick="addJob()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Job Modal -->
+    <div id="editJobModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Job</h2>
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" id="editJobId" disabled>
+            </div>
+            <div class="form-group">
+                <label>Title:</label>
+                <input type="text" id="editJobTitle">
+            </div>
+            <div class="form-group">
+                <label>Budget:</label>
+                <input type="number" id="editJobBudget">
+            </div>
+            <div class="form-group">
+                <label>Duration:</label>
+                <input type="text" id="editJobDuration">
+            </div>
+            <div class="form-group">
+                <label>City:</label>
+                <input type="text" id="editJobCity">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('editJobModal')">Cancel</button>
+                <button onclick="updateJob()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Freelancer Modal -->
+    <div id="addFreelancerModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Freelancer</h2>
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" id="freelancerId">
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="freelancerName">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="freelancerEmail">
+            </div>
+            <div class="form-group">
+                <label>Skills (comma-separated):</label>
+                <input type="text" id="freelancerSkills" placeholder="Java, Python, React">
+            </div>
+            <div class="form-group">
+                <label>Hourly Rate:</label>
+                <input type="number" id="freelancerRate">
+            </div>
+            <div class="form-group">
+                <label>Rating:</label>
+                <input type="number" step="0.1" id="freelancerRating">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('addFreelancerModal')">Cancel</button>
+                <button onclick="addFreelancer()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Freelancer Modal -->
+    <div id="editFreelancerModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Freelancer</h2>
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" id="editFreelancerId" disabled>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="editFreelancerName">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="editFreelancerEmail">
+            </div>
+            <div class="form-group">
+                <label>Skills (comma-separated):</label>
+                <input type="text" id="editFreelancerSkills" placeholder="Java, Python, React">
+            </div>
+            <div class="form-group">
+                <label>Hourly Rate:</label>
+                <input type="number" id="editFreelancerRate">
+            </div>
+            <div class="form-group">
+                <label>Rating:</label>
+                <input type="number" step="0.1" id="editFreelancerRating">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('editFreelancerModal')">Cancel</button>
+                <button onclick="updateFreelancer()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div id="addClientModal" class="modal">
+        <div class="modal-content">
+            <h2>Add Client</h2>
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" id="clientId">
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="clientName">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="clientEmail">
+            </div>
+            <div class="form-group">
+                <label>Company:</label>
+                <input type="text" id="clientCompany">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('addClientModal')">Cancel</button>
+                <button onclick="addClient()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Client Modal -->
+    <div id="editClientModal" class="modal">
+        <div class="modal-content">
+            <h2>Edit Client</h2>
+            <div class="form-group">
+                <label>ID:</label>
+                <input type="number" id="editClientId" disabled>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="editClientName">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="editClientEmail">
+            </div>
+            <div class="form-group">
+                <label>Company:</label>
+                <input type="text" id="editClientCompany">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal('editClientModal')">Cancel</button>
+                <button onclick="updateClient()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'jobs') loadJobs();
+            if (tabName === 'freelancers') loadFreelancers();
+            if (tabName === 'clients') loadClients();
+        }
+
+        // Modal functions
+        function openAddJobModal() {
+            document.getElementById('addJobModal').classList.add('active');
+        }
+
+        function openAddFreelancerModal() {
+            document.getElementById('addFreelancerModal').classList.add('active');
+        }
+
+        function openAddClientModal() {
+            document.getElementById('addClientModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // JOBS
+        async function loadJobs(sortBy, order) {
+            try {
+                let url = `${API_URL}/jobs`;
+                
+                // Add sorting parameters
+                if (sortBy) {
+                    url += `?sortBy=${sortBy}&order=${order || 'desc'}`;
+                }
+                
+                const response = await fetch(url);
+                const jobs = await response.json();
+                const tbody = document.querySelector('#jobsTable tbody');
+                tbody.innerHTML = '';
+                
+                jobs.forEach(job => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${job.jobId}</td>
+                            <td>${job.title}</td>
+                            <td>$${job.budget}</td>
+                            <td>${job.duration}</td>
+                            <td>${job.city || job.sity}</td>
+                            <td>
+                                <button onclick="openEditJobModal(${job.jobId}, '${job.title}', ${job.budget}, '${job.duration}', '${job.city || job.sity}')">Edit</button>
+                                <button class="delete-btn" onclick="deleteJob(${job.jobId})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                alert('Error loading jobs: ' + error.message);
+            }
+        }
+
+        function openEditJobModal(id, title, budget, duration, city) {
+            document.getElementById('editJobId').value = id;
+            document.getElementById('editJobTitle').value = title;
+            document.getElementById('editJobBudget').value = budget;
+            document.getElementById('editJobDuration').value = duration;
+            document.getElementById('editJobCity').value = city;
+            document.getElementById('editJobModal').classList.add('active');
+        }
+
+        async function updateJob() {
+            const id = parseInt(document.getElementById('editJobId').value);
+            const job = {
+                jobId: id,
+                title: document.getElementById('editJobTitle').value,
+                budget: parseFloat(document.getElementById('editJobBudget').value),
+                duration: document.getElementById('editJobDuration').value,
+                city: document.getElementById('editJobCity').value,
+                requiredSkills: []
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/jobs/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(job)
+                });
+                
+                if (response.ok) {
+                    closeModal('editJobModal');
+                    loadJobs();
+                    alert('Job updated successfully!');
+                } else {
+                    const error = await response.text();
+                    alert('Failed to update job: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function addJob() {
+            const job = {
+                jobId: parseInt(document.getElementById('jobId').value),
+                title: document.getElementById('jobTitle').value,
+                budget: parseFloat(document.getElementById('jobBudget').value),
+                duration: document.getElementById('jobDuration').value,
+                city: document.getElementById('jobCity').value,
+                requiredSkills: []
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/jobs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(job)
+                });
+                
+                if (response.ok) {
+                    closeModal('addJobModal');
+                    loadJobs();
+                    // Clear form
+                    document.getElementById('jobId').value = '';
+                    document.getElementById('jobTitle').value = '';
+                    document.getElementById('jobBudget').value = '';
+                    document.getElementById('jobDuration').value = '';
+                    document.getElementById('jobCity').value = '';
+                    alert('Job added successfully!');
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Failed to add job: ' + errorMessage);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteJob(id) {
+            if (!confirm('Delete this job?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/jobs/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    loadJobs();
+                    alert('Job deleted successfully!');
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Failed to delete job: ' + errorMessage);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // FREELANCERS
+        async function loadFreelancers(sortBy) {
+            try {
+                let url = `${API_URL}/freelancers`;
+                
+                // Add sorting parameter
+                if (sortBy) {
+                    url += `?sortBy=${sortBy}`;
+                }
+                
+                const response = await fetch(url);
+                const freelancers = await response.json();
+                const tbody = document.querySelector('#freelancersTable tbody');
+                tbody.innerHTML = '';
+                
+                freelancers.forEach(f => {
+                    // Format skills for display
+                    const skillsDisplay = Array.isArray(f.skills) && f.skills.length > 0 
+                        ? f.skills.join(', ') 
+                        : 'No skills';
+                    
+                    // Use rating value, ignore infoRating
+                    const rating = f.rating || 0;
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${f.id}</td>
+                            <td>${f.name}</td>
+                            <td>${f.email}</td>
+                            <td>${skillsDisplay}</td>
+                            <td>$${f.hourlyRate}</td>
+                            <td>${rating}</td>
+                            <td>
+                                <button onclick="openEditFreelancerModal(${f.id}, '${f.name}', '${f.email}', '${f.skills ? f.skills.join(',') : ''}', ${f.hourlyRate}, ${rating})">Edit</button>
+                                <button class="delete-btn" onclick="deleteFreelancer(${f.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                alert('Error loading freelancers: ' + error.message);
+            }
+        }
+
+        function openEditFreelancerModal(id, name, email, skills, rate, rating) {
+            document.getElementById('editFreelancerId').value = id;
+            document.getElementById('editFreelancerName').value = name;
+            document.getElementById('editFreelancerEmail').value = email;
+            document.getElementById('editFreelancerSkills').value = skills;
+            document.getElementById('editFreelancerRate').value = rate;
+            document.getElementById('editFreelancerRating').value = rating;
+            document.getElementById('editFreelancerModal').classList.add('active');
+        }
+
+        async function updateFreelancer() {
+            const id = parseInt(document.getElementById('editFreelancerId').value);
+            
+            // Parse skills from comma-separated string
+            const skillsInput = document.getElementById('editFreelancerSkills').value;
+            const skills = skillsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            
+            const freelancer = {
+                id: id,
+                name: document.getElementById('editFreelancerName').value,
+                email: document.getElementById('editFreelancerEmail').value,
+                skills: skills,
+                hourlyRate: parseFloat(document.getElementById('editFreelancerRate').value),
+                rating: parseFloat(document.getElementById('editFreelancerRating').value)
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/freelancers/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(freelancer)
+                });
+                
+                if (response.ok) {
+                    closeModal('editFreelancerModal');
+                    loadFreelancers();
+                    alert('Freelancer updated successfully!');
+                } else {
+                    const error = await response.text();
+                    alert('Failed to update freelancer: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function addFreelancer() {
+            // Parse skills from comma-separated string
+            const skillsInput = document.getElementById('freelancerSkills').value;
+            const skills = skillsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            
+            const freelancer = {
+                id: parseInt(document.getElementById('freelancerId').value),
+                name: document.getElementById('freelancerName').value,
+                email: document.getElementById('freelancerEmail').value,
+                skills: skills,
+                hourlyRate: parseFloat(document.getElementById('freelancerRate').value),
+                rating: parseFloat(document.getElementById('freelancerRating').value)
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/freelancers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(freelancer)
+                });
+                
+                if (response.ok) {
+                    closeModal('addFreelancerModal');
+                    loadFreelancers();
+                    // Clear form
+                    document.getElementById('freelancerId').value = '';
+                    document.getElementById('freelancerName').value = '';
+                    document.getElementById('freelancerEmail').value = '';
+                    document.getElementById('freelancerSkills').value = '';
+                    document.getElementById('freelancerRate').value = '';
+                    document.getElementById('freelancerRating').value = '';
+                    alert('Freelancer added successfully!');
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Failed to add freelancer: ' + errorMessage);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteFreelancer(id) {
+            if (!confirm('Delete this freelancer?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/freelancers/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    loadFreelancers();
+                    alert('Freelancer deleted successfully!');
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Failed to delete freelancer: ' + errorMessage);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // CLIENTS
+        async function loadClients() {
+            try {
+                const response = await fetch(`${API_URL}/clients`);
+                const clients = await response.json();
+                const tbody = document.querySelector('#clientsTable tbody');
+                tbody.innerHTML = '';
+                
+                clients.forEach(c => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${c.id}</td>
+                            <td>${c.name}</td>
+                            <td>${c.email}</td>
+                            <td>${c.company}</td>
+                            <td>
+                                <button onclick="openEditClientModal(${c.id}, '${c.name}', '${c.email}', '${c.company}')">Edit</button>
+                                <button class="delete-btn" onclick="deleteClient(${c.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                alert('Error loading clients: ' + error.message);
+            }
+        }
+
+        function openEditClientModal(id, name, email, company) {
+            document.getElementById('editClientId').value = id;
+            document.getElementById('editClientName').value = name;
+            document.getElementById('editClientEmail').value = email;
+            document.getElementById('editClientCompany').value = company;
+            document.getElementById('editClientModal').classList.add('active');
+        }
+
+        async function updateClient() {
+            const id = parseInt(document.getElementById('editClientId').value);
+            const client = {
+                id: id,
+                name: document.getElementById('editClientName').value,
+                email: document.getElementById('editClientEmail').value,
+                company: document.getElementById('editClientCompany').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/clients/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(client)
+                });
+                
+                if (response.ok) {
+                    closeModal('editClientModal');
+                    loadClients();
+                    alert('Client updated successfully!');
+                } else {
+                    const error = await response.text();
+                    alert('Failed to update client: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function addClient() {
+            const client = {
+                id: parseInt(document.getElementById('clientId').value),
+                name: document.getElementById('clientName').value,
+                email: document.getElementById('clientEmail').value,
+                company: document.getElementById('clientCompany').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/clients`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(client)
+                });
+                
+                if (response.ok) {
+                    closeModal('addClientModal');
+                    loadClients();
+                    // Clear form
+                    document.getElementById('clientId').value = '';
+                    document.getElementById('clientName').value = '';
+                    document.getElementById('clientEmail').value = '';
+                    document.getElementById('clientCompany').value = '';
+                    alert('Client added successfully!');
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Failed to add client: ' + errorMessage);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteClient(id) {
+            if (!confirm('Delete this client?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/clients/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    loadClients();
+                    alert('Client deleted successfully!');
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Failed to delete client: ' + errorMessage);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Load jobs on page load
+        window.onload = () => {
+            loadJobs();
+        };
+    </script>
+</body>
+</html>
