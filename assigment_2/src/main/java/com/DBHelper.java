@@ -2,7 +2,9 @@ package com;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DBHelper {
 
@@ -22,7 +24,7 @@ public class DBHelper {
     {
         String sql = "INSERT INTO jobs (id, title,budget,duration, city) VALUES (?,?,?,?, ?)";
         try (Connection con = getConnection();
-            PreparedStatement ps = con.prepareStatement(sql))
+             PreparedStatement ps = con.prepareStatement(sql))
         {
             ps.setInt(1, job.getJobId());
             ps.setString(2, job.getTitle());
@@ -45,7 +47,7 @@ public class DBHelper {
                 Connection con = getConnection();
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(sql)
-                )
+        )
         {
             while (rs.next()) {
                 jobs.add(new Job(
@@ -69,7 +71,7 @@ public class DBHelper {
         try(
                 Connection conn = getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)
-                )
+        )
         {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -109,7 +111,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while updating com.Job id=" + job.getJobId());
+            System.err.println("Error while updating Job id=" + job.getJobId());
             e.printStackTrace();
             return false;
         }
@@ -125,7 +127,7 @@ public class DBHelper {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.err.println("Error while deleting com.Job id=" + id);
+            System.err.println("Error while deleting Job id=" + id);
             e.printStackTrace();
             return false;
         }
@@ -134,7 +136,7 @@ public class DBHelper {
     // ==================== FREELANCERS CRUD ====================
 
     public static boolean saveFreelancer(Freelancer f) {
-        String sql = "INSERT INTO freelancers (id, name, email, hourly_rate, rating) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO freelancers (id, name, email, hourly_rate, rating, skills) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -145,11 +147,16 @@ public class DBHelper {
             ps.setDouble(4, f.getHourlyRate());
             ps.setDouble(5, f.getRating());
 
+            // Convert skills list to comma-separated string
+            String skillsStr = f.getSkills() != null ?
+                    String.join(",", f.getSkills()) : "";
+            ps.setString(6, skillsStr);
+
             ps.executeUpdate();
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while saving com.Freelancer");
+            System.err.println("Error while saving Freelancer");
             e.printStackTrace();
             return false;
         }
@@ -157,18 +164,25 @@ public class DBHelper {
 
     public static List<Freelancer> getAllFreelancers() {
         List<Freelancer> list = new ArrayList<>();
-        String sql = "SELECT id, name, email, hourly_rate, rating FROM freelancers";
+        String sql = "SELECT id, name, email, hourly_rate, rating, skills FROM freelancers";
 
         try (Connection conn = getConnection();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
+                // Parse skills from comma-separated string
+                String skillsStr = rs.getString("skills");
+                List<String> skills = new ArrayList<>();
+                if (skillsStr != null && !skillsStr.trim().isEmpty()) {
+                    skills = Arrays.asList(skillsStr.split(","));
+                }
+
                 Freelancer f = new Freelancer(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
-                        new ArrayList<>(),
+                        skills,
                         rs.getDouble("hourly_rate")
                 );
                 f.setRating(rs.getDouble("rating"));
@@ -184,7 +198,7 @@ public class DBHelper {
     }
 
     public static Freelancer getFreelancerById(int id) {
-        String sql = "SELECT id, name, email, hourly_rate, rating FROM freelancers WHERE id = ?";
+        String sql = "SELECT id, name, email, hourly_rate, rating, skills FROM freelancers WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -193,11 +207,18 @@ public class DBHelper {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+                // Parse skills from comma-separated string
+                String skillsStr = rs.getString("skills");
+                List<String> skills = new ArrayList<>();
+                if (skillsStr != null && !skillsStr.trim().isEmpty()) {
+                    skills = Arrays.asList(skillsStr.split(","));
+                }
+
                 Freelancer f = new Freelancer(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("email"),
-                        new ArrayList<>(),
+                        skills,
                         rs.getDouble("hourly_rate")
                 );
                 f.setRating(rs.getDouble("rating"));
@@ -205,7 +226,7 @@ public class DBHelper {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error while loading com.Freelancer id=" + id);
+            System.err.println("Error while loading Freelancer id=" + id);
             e.printStackTrace();
         }
 
@@ -213,7 +234,7 @@ public class DBHelper {
     }
 
     public static boolean updateFreelancer(Freelancer f) {
-        String sql = "UPDATE freelancers SET name = ?, email = ?, hourly_rate = ?, rating = ? WHERE id = ?";
+        String sql = "UPDATE freelancers SET name = ?, email = ?, hourly_rate = ?, rating = ?, skills = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -222,13 +243,19 @@ public class DBHelper {
             ps.setString(2, f.getEmail());
             ps.setDouble(3, f.getHourlyRate());
             ps.setDouble(4, f.getRating());
-            ps.setInt(5, f.getId());
+
+            // Convert skills list to comma-separated string
+            String skillsStr = f.getSkills() != null ?
+                    String.join(",", f.getSkills()) : "";
+            ps.setString(5, skillsStr);
+
+            ps.setInt(6, f.getId());
 
             ps.executeUpdate();
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while updating com.Freelancer id=" + f.getId());
+            System.err.println("Error while updating Freelancer id=" + f.getId());
             e.printStackTrace();
             return false;
         }
@@ -245,7 +272,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while deleting com.Freelancer id=" + id);
+            System.err.println("Error while deleting Freelancer id=" + id);
             e.printStackTrace();
             return false;
         }
@@ -268,7 +295,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while saving com.Client");
+            System.err.println("Error while saving Client");
             e.printStackTrace();
             return false;
         }
@@ -318,7 +345,7 @@ public class DBHelper {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error while loading com.Client id=" + id);
+            System.err.println("Error while loading Client id=" + id);
             e.printStackTrace();
         }
 
@@ -340,7 +367,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while updating com.Client id=" + c.getId());
+            System.err.println("Error while updating Client id=" + c.getId());
             e.printStackTrace();
             return false;
         }
@@ -357,7 +384,7 @@ public class DBHelper {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Error while deleting com.Client id=" + id);
+            System.err.println("Error while deleting Client id=" + id);
             e.printStackTrace();
             return false;
         }

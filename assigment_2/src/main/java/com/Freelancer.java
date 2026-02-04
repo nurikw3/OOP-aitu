@@ -1,5 +1,7 @@
 package com;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +42,7 @@ public class Freelancer extends User{
         }
         return false;
     }
-
+    @JsonIgnore
     public String getInfoRating() {
         return getRating() == 0.0 ? "No rating" : rating + "/5.0";
     }

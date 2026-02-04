@@ -11,13 +11,37 @@ import java.util.List;
 public class JobController {
 
     @GetMapping
-    public ResponseEntity<?> getAllJobs() {
+    public ResponseEntity<?> getAllJobs(@RequestParam(required = false) String sortBy,
+                                        @RequestParam(required = false) String order) {
         try {
             List<Job> jobs = DBHelper.getAllJobs();
+
+            if (sortBy != null && sortBy.equals("budget")) {
+                boolean reverse = order != null && order.equals("asc");
+                sortJobsByBudget(jobs, reverse);
+            }
+
             return ResponseEntity.ok(jobs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error loading jobs: " + e.getMessage());
+        }
+    }
+
+    private void sortJobsByBudget(List<Job> jobs, boolean reverse) {
+        for (int i = 0; i < jobs.size(); i++) {
+            for (int j = 0; j < jobs.size() - i - 1; j++) {
+                if (jobs.get(j).getBudget() < jobs.get(j+1).getBudget() && !reverse) {
+                    Job temp = jobs.get(j);
+                    jobs.set(j, jobs.get(j+1));
+                    jobs.set(j+1, temp);
+                }
+                if (jobs.get(j).getBudget() > jobs.get(j+1).getBudget() && reverse) {
+                    Job temp = jobs.get(j);
+                    jobs.set(j, jobs.get(j+1));
+                    jobs.set(j+1, temp);
+                }
+            }
         }
     }
 
@@ -27,7 +51,7 @@ public class JobController {
             if (id <= 0) {
                 return ResponseEntity.badRequest().body("Invalid ID");
             }
-            
+
             Job job = DBHelper.getJobById(id);
             if (job != null) {
                 return ResponseEntity.ok(job);
@@ -56,7 +80,7 @@ public class JobController {
             if (job.getDuration() == null || job.getDuration().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Duration is required");
             }
-            
+
             boolean success = DBHelper.saveJob(job);
             if (success) {
                 return ResponseEntity.status(HttpStatus.CREATED)
@@ -83,14 +107,14 @@ public class JobController {
             if (job.getBudget() <= 0) {
                 return ResponseEntity.badRequest().body("Budget must be positive");
             }
-            
+
             // Check if job exists
             Job existing = DBHelper.getJobById(id);
             if (existing == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Job not found with ID: " + id);
             }
-            
+
             boolean success = DBHelper.updateJob(job);
             if (success) {
                 return ResponseEntity.ok("Job updated successfully");
@@ -109,14 +133,14 @@ public class JobController {
             if (id <= 0) {
                 return ResponseEntity.badRequest().body("Invalid ID");
             }
-            
+
             // Check if job exists
             Job existing = DBHelper.getJobById(id);
             if (existing == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Job not found with ID: " + id);
             }
-            
+
             boolean success = DBHelper.deleteJob(id);
             if (success) {
                 return ResponseEntity.ok("Job deleted successfully");
